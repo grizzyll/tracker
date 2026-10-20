@@ -7,6 +7,7 @@ use App\Models\ThesisLog;
 use App\Models\ThesisStage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\ThesisProgress;
 
 class ThesisController extends Controller
 {
@@ -24,24 +25,20 @@ class ThesisController extends Controller
     ];
 
     public function index(Request $request)
-    {
-        $uid = $request->user()->id;
+{
+    $uid = $request->user()->id;
 
-        if (! ThesisStage::where('user_id', $uid)->exists()) {
-            foreach (self::DEFAULT_STAGES as $i => $name) {
-                ThesisStage::create(['user_id' => $uid, 'name' => $name, 'position' => $i + 1]);
-            }
+    if (! ThesisStage::where('user_id', $uid)->exists()) {
+        foreach (self::DEFAULT_STAGES as $i => $name) {
+            ThesisStage::create(['user_id' => $uid, 'name' => $name, 'position' => $i + 1]);
         }
-
-        $thesis  = Thesis::firstOrCreate(['user_id' => $uid]);
-        $stages  = ThesisStage::where('user_id', $uid)->orderBy('position')->get();
-        $logs    = ThesisLog::where('user_id', $uid)->orderByDesc('held_on')->orderByDesc('id')->get();
-        $done    = $stages->where('status', 'acc')->count();
-        $percent = $stages->count() ? (int) round($done / $stages->count() * 100) : 0;
-        $current = $stages->first(fn ($s) => $s->status !== 'acc');
-
-        return view('tugas-akhir.index', compact('thesis', 'stages', 'logs', 'done', 'percent', 'current'));
     }
+
+    $thesis = Thesis::firstOrCreate(['user_id' => $uid]);
+    $logs   = ThesisLog::where('user_id', $uid)->orderByDesc('held_on')->orderByDesc('id')->get();
+
+    return view('tugas-akhir.index', ThesisProgress::for($uid) + compact('thesis', 'logs'));
+}
 
     public function saveInfo(Request $request)
     {
