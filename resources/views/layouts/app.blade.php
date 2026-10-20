@@ -5,8 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>@yield('title', 'Beranda') · {{ config('app.name') }}</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&display=swap">
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Poppins:wght@400;500;600;700&family=Special+Elite&display=swap">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ filemtime(public_path('css/app.css')) }}">
 </head>
 
 <body>
@@ -21,7 +22,7 @@
                 ];
             @endphp
             <nav class="side" aria-label="Navigasi utama">
-                <div class="brand">{{ config('app.name') }}</div>
+                <div class="brand"><b>✦</b> {{ config('app.name') }}</div>
                 @foreach ($items as [$route, $label, $path])
                     <a href="{{ route($route) }}" aria-label="{{ $label }}" @if(request()->routeIs($route)) aria-current="page"
                     @endif>
