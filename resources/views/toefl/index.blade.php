@@ -137,6 +137,31 @@
   </div>
 </div>
 
+<div class="card" style="margin-top:18px" id="arsip">
+  <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">
+    <h2>Arsip catatan</h2>
+    <form method="GET" action="{{ route('toefl') }}#arsip" style="display:flex;gap:8px;align-items:center">
+      <input type="search" name="q" value="{{ $t['q'] }}" placeholder="Cari catatan, mis. pasif" aria-label="Cari catatan" style="width:220px">
+      <button class="btn">Cari</button>
+      @if ($t['q'])<a href="{{ route('toefl') }}#arsip" class="mute">Reset</a>@endif
+    </form>
+  </div>
+
+  @forelse ($t['notes'] as $n)
+    <details class="app" @if ($loop->first || $t['q']) open @endif>
+      <summary>
+        <div class="n">
+          <b>{{ $n->noted_on->locale('id')->translatedFormat('l, j F Y') }}</b>
+          <p class="mute">{{ \Illuminate\Support\Str::limit($n->body, 80) }}</p>
+        </div>
+      </summary>
+      <div class="edit"><p style="white-space:pre-line">{{ $n->body }}</p></div>
+    </details>
+  @empty
+    <p class="mute" style="margin-top:10px">{{ $t['q'] ? 'Tidak ada catatan yang cocok dengan “'.$t['q'].'”.' : 'Belum ada catatan tersimpan.' }}</p>
+  @endforelse
+</div>
+
 <div class="card" style="margin-top:18px">
   <h2>Riwayat tryout</h2>
   @if ($t['tryouts']->isEmpty())

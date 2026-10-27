@@ -14,8 +14,11 @@ class ToeflController extends Controller
 {
     public function index(Request $request)
     {
-        return view('toefl.index', ['t' => ToeflProgress::for($request->user()->id)]);
-    }
+    $q = trim((string) $request->query('q')) ?: null;
+
+    return view('toefl.index', ['t' => ToeflProgress::for($request->user()->id, $q)]);
+}
+    
 
     public function saveSetting(Request $request)
     {
